@@ -1,0 +1,33 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "cppbuild",
+            "label": "Build & Run Contact Test",
+            "command": "C:\\msys64\\mingw64\\bin\\gcc.exe",   // ← 여기만 당신 gcc 경로로 바꾸세요!!
+            "args": [
+                "-g",
+                "example_main.c",
+                "-o",
+                "test.exe",
+                "-lm"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": ["$gcc"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "Contact Test Build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": true
+            }
+        }
+    ]
+}
