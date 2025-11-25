@@ -6,7 +6,7 @@
 
 #include <stdio.h>
 #include <math.h>
-#include "contact_penalty.c"  // Include (or compile together)
+#include "contact_friction.c"  // Include (or compile together)
 
 int main() {
     int ndof = 2;  // u[0]=master, u[1]=slave

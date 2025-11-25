@@ -1,0 +1,9 @@
+# Simple 2D Mesh: Two squares (master bottom, slave top)
+# Nodes: ID x y (4 nodes total)
+0 0.0 0.0
+1 0.1 0.0
+2 0.0 0.1
+3 0.1 0.1
+
+# Elements: quad4 (bottom square: 0-1-3-2, top square: dummy)
+1 0 1 3 2

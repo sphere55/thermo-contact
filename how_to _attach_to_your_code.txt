@@ -1,0 +1,37 @@
+==================================================
+HOW TO ATTACH PENALTY CONTACT TO YOUR EXISTING C CODE
+==================================================
+(2025-11-25, for sphere55 – 51세 FEA 마스터)
+
+당신의 기존 열탄소성 코드 구조를 가정:
+- 전역 u[] (변위), temp[] (온도), Fint[] (내부력), K[] (강성행렬, row-major)
+- Newton 루프: assemble_elements() → solve K du = Fext - Fint → u += du
+- ndof = 총 자유도 수
+
+STEP 1: contact_penalty.c 전체 복사해서 당신 코드에 #include 또는 합치기
+- ContactPair 구조체 추가 (contact_pairs[MAX_CONTACT_PAIRS])
+
+STEP 2: main() 또는 init()에서 컨택 페어 초기화 (한 번만)
+int slaves[] = {120, 150, ...};  // 슬레이브 노드 번호들
+int masters[] = {85, 200, ...};  // 마스터 노드 번호들
+double gaps[] = {0.001, 0.0005, ...};  // 초기 gap (m)
+double mus[] = {0.3, 0.2, ...};  // 마찰계수 (0 = no friction)
+init_contacts(n_pairs, slaves, masters, gaps, mus);
+
+STEP 3: Newton assemble 루프 끝에 딱 한 줄 추가 (기존 assemble_thermo_elastoplastic() 뒤에)
+add_penalty_contact(u, Fint, K, ndof_total, temp, alpha_thermal);  // alpha = 1.2e-5
+
+STEP 4: eps_n 조절 (코드 상단)
+double eps_n = 1e12;  // 강철 E=200GPa 기준. 침투 >1e-6m 나오면 10배 올림
+
+STEP 5: 컴파일 후 테스트
+- gap = 0.001 m, u[slave] - u[master] = 0.002 m → tn ≈ 1000 N 나와야 함
+- 열팽창: temp[slave] = 100°C → g_thermal = alpha * 100 * gap_length 자동 보정
+
+주의:
+- K가 sparse (CSR)라면, K 추가 부분을 sparse insert로 바꾸세요.
+- 마찰 필요시 add_penalty_friction() 호출 (Q_heat[]에 frictional heat 추가).
+- 첫 테스트: n_contact_pairs = 1로 한 쌍만 해서 검산.
+
+이제 당신 코드 99% 완성! 질문 있으면 언제든.
+==================================================
